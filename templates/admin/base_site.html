@@ -2,6 +2,7 @@
 
 {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 
+/* 自定义了admin页面的title */
 {% block branding %}
     <h1 id="site-name"><a href="{% url 'admin:index' %}">Polls自定义 Administration</a></h1>
 {% endblock %}
