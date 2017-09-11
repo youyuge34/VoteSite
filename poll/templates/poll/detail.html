@@ -5,11 +5,22 @@
     <title>问题详情页</title>
 </head>
 <body>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 <h1>{{ question.question_text }}</h1>
-<ul>
+{#<ul>#}
+{#    {% for choice in question.choice_set.all %}#}
+{#        <li>{{ choice.choice_text }}</li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+
+<form method="post" action="{% url 'poll:vote' question.id %}">
+    {% csrf_token %}
     {% for choice in question.choice_set.all %}
-        <li>{{ choice.choice_text }}</li>
+        <input type="radio" name="choice_post" id="choice{{ forloop.counter }}" value="{{ choice.id }}"/>
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+        <br/>
     {% endfor %}
-</ul>
+    <input type="submit" value="提交"/>
+</form>
 </body>
 </html>
