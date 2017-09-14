@@ -4,8 +4,11 @@ from __future__ import unicode_literals
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader, RequestContext
+from django.views import generic
+
 from models import Question, Choice
 from django.core.urlresolvers import reverse
+
 
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
@@ -17,6 +20,15 @@ def index(request):
     return render(request, 'poll/index.html', context)
 
 
+class IndexView(generic.ListView):
+    # 改良通用视图版本
+    template_name = 'poll/index.html'
+    context_object_name = 'latest_question_list'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
+
 def detail(request, question_id):
     # try:
     #     question = Question.objects.all().get(pk = question_id)
@@ -26,10 +38,20 @@ def detail(request, question_id):
     return render(request, 'poll/detail.html', {'question': question, })
 
 
+class DetailView(generic.DetailView):
+    # 改良通用视图版本
+    model = Question
+    template_name = 'poll/detail.html'
+
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'poll/results.html', {'question': question, })
 
+
+class ResultsView(generic.DetailView):
+    # 改良通用视图版本
+    model = Question
+    template_name = 'poll/results.html'
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
